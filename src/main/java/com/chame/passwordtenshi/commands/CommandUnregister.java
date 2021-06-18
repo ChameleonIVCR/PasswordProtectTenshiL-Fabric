@@ -1,50 +1,32 @@
 package com.chame.passwordtenshi.commands;
 
+import com.chame.passwordtenshi.player.PlayerSession;
+import com.chame.passwordtenshi.player.PlayerStorage;
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.LiteralText;
+
+import static net.minecraft.server.command.CommandManager.literal;
+
 public class CommandUnregister{
 
-/*     private final PasswordTenshi pt;
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        dispatcher.register(literal("unregister")
+                .executes(ctx -> {
+                    ServerPlayerEntity player = ctx.getSource().getPlayer();
+                    PlayerSession playerSession = PlayerStorage.getPlayerSession(player.getUuid());
 
-    public CommandUnregister(PasswordTenshi pt) {
-        this.pt = pt;
+                    playerSession.removePasswordHash();
+
+                    playerSession.setAuthorized(false);
+                    playerSession.setSpectator();
+
+                    ctx.getSource().sendFeedback(new LiteralText("§aSuccessfully unregistered! Please register again!"), false);
+
+                    playerSession.authReminder();
+
+                    return 1;
+                }));
     }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, 
-                             String label, String[] args) {
-        
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(
-                    ConfigFile.getLocal("console.console_not_allowed"));
-            
-            return true;
-        }
-
-        Bukkit.getScheduler().runTaskAsynchronously(pt, () -> {
-
-            Player player = (Player) sender;
-            PlayerSession playersession 
-                    = PlayerStorage
-                    .getPlayerSession(player.getUniqueId());
-
-            try {
-                playersession.removePasswordHash();
-                sender.sendMessage(
-                        ConfigFile.getLocal("unregister.player_unregister"));
-                
-                playersession.setAuthorized(false);
-                playersession.setGamemode(player.getGameMode());
-                Bukkit.getScheduler().runTask(pt, () -> 
-                        player.setGameMode(GameMode.SPECTATOR));
-                
-                player.sendMessage(
-                        ConfigFile.getLocal("unregister.register_again"));
-                
-                playersession.registerLoginReminder();
-                
-            } catch (IllegalArgumentException | NullPointerException e) {
-                e.printStackTrace();
-            }
-        });
-        return true;
-    } */
 }
