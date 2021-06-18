@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "pptfabric",
+  "version": "${version}",
+  "name": "PasswordProtectTenshiL-Fabric",
+  "description": "Provide an alternate auth system for non-premium servers.",
+  "authors": [
+    "Chame",
+    "Viruz",
+    "Zonal"
+  ],
+  "contact": {
+    "homepage": "https://discord.gg/Ng6srGptE7",
+    "sources": "TODO"
+  },
+  "icon": "assets/pptfabric/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "server": [
+      "com.chame.passwordtenshi.PasswordTenshi"
+    ]
+  },
+  "depends": {},
+  "mixins": [
+    "pptfabric.mixins.json"
+  ]
+}

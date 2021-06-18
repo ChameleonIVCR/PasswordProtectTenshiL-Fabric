@@ -1,0 +1,14 @@
+{
+    "required": true,
+    "package": "me.chame.passwordtenshi.mixin",
+    "compatibilityLevel": "JAVA_16",
+    "mixins": [
+      "MixinMinecraftServer",
+      "PlayerManagerMixin",
+      "ServerPlayNetworkHandlerMixin"
+    ],
+    "injectors": {
+      "defaultRequire": 1
+    },
+    "refmap": "pptfabric-refmap.json"
+  }
