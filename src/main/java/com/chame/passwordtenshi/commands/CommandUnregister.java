@@ -16,9 +16,13 @@ public class CommandUnregister{
                 .executes(ctx -> {
                     ServerPlayerEntity player = ctx.getSource().getPlayer();
                     PlayerSession playerSession = PlayerStorage.getPlayerSession(player.getUuid());
+                    
+                    if (!playerSession.isAuthorized()) {
+                        ctx.getSource().sendFeedback(new LiteralText("§cYou need to authenticate first."), false);
+                        return 1;
+                    } 
 
                     playerSession.removePasswordHash();
-
                     playerSession.setAuthorized(false);
                     playerSession.setSpectator();
 
