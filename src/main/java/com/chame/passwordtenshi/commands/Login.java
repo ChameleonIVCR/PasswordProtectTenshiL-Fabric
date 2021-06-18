@@ -33,19 +33,25 @@ public class Login {
 
                         if (hash == null) {
                             ctx.getSource().sendFeedback(new LiteralText("§cYou're not registered! Use /register instead."), false);
+                            return 1;
 
-                        } else if (password.equals("")  || password == null){
+                        } else if (password.equals("")  || password == null || password.length() == 0){
                             ctx.getSource().sendFeedback(new LiteralText("§cYour password cannot be empty."), false);
-
-                        } else if (PasswordChecker.check(password, hash)) {
-                            playerSession.setAuthorized(true);
-                            playerSession.setGameMode("SURVIVAL");
-                            ctx.getSource().sendFeedback(new LiteralText("§aLogged in."), false);
-                            player.networkHandler.sendPacket(new PlaySoundIdS2CPacket(new Identifier("minecraft:block.note_block.pling"), SoundCategory.MASTER, player.getPos(), 100f, 0f));
-                            
-                        } else {
-                            player.networkHandler.sendPacket(new PlaySoundIdS2CPacket(new Identifier("minecraft:entity.zombie.attack_iron_door"), SoundCategory.MASTER, player.getPos(), 100f, 0.5f));
-                            ctx.getSource().sendFeedback(new LiteralText("§cIncorrect password!"), false);
+                            return 1;
+                        } 
+                        try{
+                            if (PasswordChecker.check(password, hash)) {
+                                playerSession.setAuthorized(true);
+                                playerSession.setGameMode("SURVIVAL");
+                                ctx.getSource().sendFeedback(new LiteralText("§aLogged in."), false);
+                                player.networkHandler.sendPacket(new PlaySoundIdS2CPacket(new Identifier("minecraft:block.note_block.pling"), SoundCategory.MASTER, player.getPos(), 100f, 0f));
+                                
+                            } else {
+                                player.networkHandler.sendPacket(new PlaySoundIdS2CPacket(new Identifier("minecraft:entity.zombie.attack_iron_door"), SoundCategory.MASTER, player.getPos(), 100f, 0.5f));
+                                ctx.getSource().sendFeedback(new LiteralText("§cIncorrect password!"), false);
+                            }
+                        } catch(Exception e){
+                            e.printStackTrace();
                         }
                         return 1;
         })));
