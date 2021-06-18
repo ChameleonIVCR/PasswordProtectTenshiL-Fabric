@@ -24,13 +24,19 @@ public class Login {
                         String password = StringArgumentType.getString(ctx, "password");
                         ServerPlayerEntity player = ctx.getSource().getPlayer();
                         PlayerSession playerSession = PlayerStorage.getPlayerSession(player.getUuid());
+
+                        if (playerSession.isAuthorized()) {
+                            ctx.getSource().sendFeedback(new LiteralText("§cYou are already authorized."), false);
+                            return 1;
+                        }
+
                         String hash = playerSession.getPasswordHash();
 
                         if (hash == null) {
                             ctx.getSource().sendFeedback(new LiteralText("§cYou're not registered! Use /register instead."), false);
                             return 1;
 
-                        } else if (password.equals("")  || password == null || password.length() == 0){
+                        } else if (password.length() == 0){
                             ctx.getSource().sendFeedback(new LiteralText("§cYour password cannot be empty."), false);
                             return 1;
                         } 
