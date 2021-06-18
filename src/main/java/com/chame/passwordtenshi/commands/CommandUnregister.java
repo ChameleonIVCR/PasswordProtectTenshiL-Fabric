@@ -1,18 +1,6 @@
 package com.chame.passwordtenshi.commands;
 
-import com.chame.passwordtenshi.PasswordTenshi;
-import com.chame.passwordtenshi.utils.ConfigFile;
-import com.chame.passwordtenshi.player.PlayerSession;
-import com.chame.passwordtenshi.player.PlayerStorage;
-
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-public class CommandUnregister implements CommandExecutor {
+public class CommandUnregister{
 
 /*     private final PasswordTenshi pt;
 

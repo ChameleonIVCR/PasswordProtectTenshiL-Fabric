@@ -1,7 +1,5 @@
 package com.chame.passwordtenshi.listeners;
 
-import com.chame.passwordtenshi.LoginMod;
-import com.chame.passwordtenshi.PlayerLogin;
 import com.chame.passwordtenshi.player.*;
 
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
@@ -20,15 +18,16 @@ public class OnPlayerConnect {
         PlayerSession playerSession = new PlayerSession(player);
         
         //Either this, or cancel actions with a inject. Let's try this.
-        playerSession.setGamemode("SPECTATOR");
+        playerSession.setGameMode("SPECTATOR");
         PlayerStorage.addPlayerSession(playerSession);
 
         //Reminder
-        FutureTask<Boolean> task = new FutureTask<>(new PlayerRegisterReminder(playerSession));
-        PasswordTenshi.getMainExecutor().execute(task);
+        playerSession.authReminder();
 
         //player.setInvulnerable(true);
         player.sendMessage(new LiteralText("§9Welcome to this shithole, to play, you must log in.\n§eLog in using /login and register using /register"), false);
-        player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.TITLE, new LiteralText("§aIdentify yourself")));
+        
+        //Dont really need this:
+        //player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.TITLE, new LiteralText("§aIdentify yourself")));
     }
 }

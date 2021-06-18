@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerStorage {
     private static ConcurrentHashMap<UUID, PlayerSession> playerstorage;
 
-    public static initialize (){
+    public static void initialize(){
         playerstorage = new ConcurrentHashMap<>();
     }
 

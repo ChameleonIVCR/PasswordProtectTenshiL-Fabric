@@ -6,23 +6,23 @@ import com.chame.passwordtenshi.commands.*;
 import com.chame.passwordtenshi.utils.*;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.io.File;
+
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class PasswordTenshi implements DedicatedServerModInitializer {
-    private final Logger logger = LogManager.getLogger();
+    private final org.apache.logging.log4j.core.Logger logger = (org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger();
     private final ConfigFile config = new ConfigFile();
     //Amount of threads to use.
-    private static final ScheduledExecutorService scheduler = Executors.newFixedThreadPool(2);
+    private static final ExecutorService scheduler = Executors.newFixedThreadPool(2);
 
     @Override
     public void onInitializeServer() {
@@ -30,28 +30,18 @@ public class PasswordTenshi implements DedicatedServerModInitializer {
         PlayerSession.initialize(this);
         PlayerStorage.initialize();
         initializeDatabase();
-        
-        getServer().getPluginManager()
-                .registerEvents(new PlayerListener(this), this);
-        
-        this.getCommand("register")
-                .setExecutor(new CommandRegister(this));
-        
-        this.getCommand("unregister")
-                .setExecutor(new CommandUnregister(this));
-        
-        this.getCommand("login")
-                .setExecutor(new CommandLogin(this));
-        
-        this.getCommand("resetplayer")
-                .setExecutor(new CommandUnregisterPlayer(this));
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+            Login.register(dispatcher);
+            Register.register(dispatcher);
+        });
         
         this.logger.addFilter(new LogFilter());
         logger.info("PPTenshi is here to protect your server <3");
     }
 
-    public static ScheduledExecutorService getMainExecutor(){
-        return ScheduledExecutorService;
+    public static ExecutorService getMainExecutor(){
+        return scheduler;
     }
 
     public Logger getMainLogger(){

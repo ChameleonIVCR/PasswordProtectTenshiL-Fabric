@@ -2,15 +2,15 @@ package com.chame.passwordtenshi.player;
 
 import com.chame.passwordtenshi.PasswordTenshi;
 import com.chame.passwordtenshi.database.Database;
-import com.chame.passwordtenshi.utils.ConfigFile;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.GameMode;
 
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.FutureTask;
 
 public class PlayerSession {
 
@@ -23,7 +23,7 @@ public class PlayerSession {
 
     public PlayerSession(ServerPlayerEntity player){
         this.player = player;
-        this.uuid = player.getUUID();
+        this.uuid = player.getUuid();
         this.authorized = false;
     }
 
@@ -45,8 +45,9 @@ public class PlayerSession {
         return authorized;
     }
 
-    public void setGamemode(String gamemode){
-        this.player.setGamemode(GameMode.byName(gamemode));
+    public void setGameMode(String gamemode){
+        //TODO: Research this later.
+        this.player.changeGameMode(GameMode.byName(gamemode));
     }
 
     public void setAuthorized(boolean authorized) {
@@ -69,5 +70,10 @@ public class PlayerSession {
 
     public void removePasswordHash() {
         database.deletePass(uuid.toString());
+    }
+
+    public void authReminder() {
+        FutureTask<Boolean> task = new FutureTask<>(new PlayerRegisterReminder((PlayerSession) this));
+        PasswordTenshi.getMainExecutor().execute(task);
     }
 }

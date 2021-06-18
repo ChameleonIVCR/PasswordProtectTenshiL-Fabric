@@ -1,6 +1,5 @@
 package com.chame.passwordtenshi.commands;
 
-import com.chame.passwordtenshi.PasswordChecker;
 import com.chame.passwordtenshi.PasswordTenshi;
 import com.chame.passwordtenshi.utils.PasswordChecker;
 import com.chame.passwordtenshi.player.PlayerSession;
@@ -10,6 +9,17 @@ import java.util.logging.Logger;
 import java.util.Collections;
 import java.util.List;
 
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
+import net.minecraft.network.packet.s2c.play.PlaySoundIdS2CPacket;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.Identifier;
+
 public class Login {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -17,8 +27,8 @@ public class Login {
                 .then(argument("password", StringArgumentType.word())
                     .executes(ctx -> {
                         String password = StringArgumentType.getString(ctx, "password");
-                        //String username = ctx.getSource().getPlayer().getEntityName();
-                        PlayerSession playerSession = PlayerStorage.getPlayerSession(player.getUUID());
+                        ServerPlayerEntity player = ctx.getSource().getPlayer();
+                        PlayerSession playerSession = PlayerStorage.getPlayerSession(player.getUuid());
                         String hash = playerSession.getPasswordHash();
 
                         if (hash == null) {

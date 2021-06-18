@@ -1,19 +1,25 @@
 package com.chame.passwordtenshi.commands;
 
-import com.chame.passwordtenshi.PasswordChecker;
+
 import com.chame.passwordtenshi.PasswordTenshi;
+import com.chame.passwordtenshi.utils.PasswordChecker;
 import com.chame.passwordtenshi.utils.ConfigFile;
 import com.chame.passwordtenshi.player.PlayerSession;
 import com.chame.passwordtenshi.player.PlayerStorage;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.TabExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import java.util.Collections;
 import java.util.List;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
+import net.minecraft.network.packet.s2c.play.PlaySoundIdS2CPacket;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.Identifier;
 
 public class Register {
 

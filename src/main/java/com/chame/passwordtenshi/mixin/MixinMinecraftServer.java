@@ -1,7 +1,7 @@
 package com.chame.passwordtenshi.mixin;
 
 
-import com.chame.passwordtenshi.mixin.OnFirstTick;
+import com.chame.passwordtenshi.listeners.OnFirstTick;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
