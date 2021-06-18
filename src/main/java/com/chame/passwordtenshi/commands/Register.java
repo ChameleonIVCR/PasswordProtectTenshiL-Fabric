@@ -22,11 +22,16 @@ public class Register {
                         ServerPlayerEntity player = ctx.getSource().getPlayer();
                         PlayerSession playerSession = PlayerStorage.getPlayerSession(player.getUuid());
 
-                        if (password.equals("")  || password == null) {
+                        if (password.length() == 0) {
                             ctx.getSource().sendFeedback(new LiteralText("§cYour password cannot be empty."), false);
                             return 1;
+
                         } else if (playerSession.isAuthorized()) {
                             ctx.getSource().sendFeedback(new LiteralText("§cYou're already authorized."), false);
+                            return 1;
+
+                        } else if (playerSession.getPasswordHash() != null) {
+                            ctx.getSource().sendFeedback(new LiteralText("§cYou're already registered."), false);
                             return 1;
                         }
 
