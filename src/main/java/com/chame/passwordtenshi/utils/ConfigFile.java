@@ -19,7 +19,7 @@ public class ConfigFile {
     // Initializes the Hashmap and loads the properties into it.
     public ConfigFile() {
         propertiesStorage = new HashMap<>();
-        propertiesStorage.put("pptfabric", loadProperties("pptfabric"));
+        propertiesStorage.put("pptfabric", loadProperties("PasswordProtectTenshi"));
     }
 
     // Returns the content of a Properties element. As the properties files is

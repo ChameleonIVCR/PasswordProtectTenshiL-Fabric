@@ -34,11 +34,11 @@ public class Register {
                             String hash = PasswordChecker.getSaltedHash(password);
                             playerSession.setPasswordHash(hash);
                             playerSession.setAuthorized(true);
-                            playerSession.setGameMode("SURVIVAL");
+                            playerSession.setSurvival();
                         } catch (Exception i){
                             i.printStackTrace();
                         }
-
+                        ctx.getSource().sendFeedback(new LiteralText("§aWelcome."), false);
                         return 1;
         })));
     }

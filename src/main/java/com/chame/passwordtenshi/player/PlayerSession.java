@@ -8,8 +8,6 @@ import net.minecraft.world.GameMode;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.Logger;
-
 import java.util.concurrent.FutureTask;
 
 public class PlayerSession {
@@ -18,8 +16,6 @@ public class PlayerSession {
     private final ServerPlayerEntity player;
     private final UUID uuid;
     private static Database database;
-    private static PasswordTenshi pt;
-    private static Logger logger;
 
     public PlayerSession(ServerPlayerEntity player){
         this.player = player;
@@ -31,11 +27,6 @@ public class PlayerSession {
         database = db;
     }
 
-    public static void initialize(PasswordTenshi ptt){
-        pt = ptt;
-        logger = pt.getMainLogger();
-    }
-
     public UUID getUUID(){
         return uuid;
     }
@@ -45,13 +36,17 @@ public class PlayerSession {
         return authorized;
     }
 
-    public void setGameMode(String gamemode){
+    public void setSpectator(){
         //TODO: Research this later.
-        this.player.changeGameMode(GameMode.byName(gamemode));
+        this.player.changeGameMode(GameMode.SPECTATOR);
+    }
+
+    public void setSurvival(){
+        //TODO: Research this later.
+        this.player.changeGameMode(GameMode.SURVIVAL);
     }
 
     public void setAuthorized(boolean authorized) {
-        logger.info(String.format("Set %s authorization to %s", uuid, authorized));
         this.authorized = authorized;
     }
 

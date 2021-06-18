@@ -5,10 +5,6 @@ import com.chame.passwordtenshi.utils.PasswordChecker;
 import com.chame.passwordtenshi.player.PlayerSession;
 import com.chame.passwordtenshi.player.PlayerStorage;
 
-import java.util.logging.Logger;
-import java.util.Collections;
-import java.util.List;
-
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -42,12 +38,12 @@ public class Login {
                         try{
                             if (PasswordChecker.check(password, hash)) {
                                 playerSession.setAuthorized(true);
-                                playerSession.setGameMode("SURVIVAL");
+                                playerSession.setSurvival();
                                 ctx.getSource().sendFeedback(new LiteralText("§aLogged in."), false);
                                 player.networkHandler.sendPacket(new PlaySoundIdS2CPacket(new Identifier("minecraft:block.note_block.pling"), SoundCategory.MASTER, player.getPos(), 100f, 0f));
                                 
                             } else {
-                                player.networkHandler.sendPacket(new PlaySoundIdS2CPacket(new Identifier("minecraft:entity.zombie.attack_iron_door"), SoundCategory.MASTER, player.getPos(), 100f, 0.5f));
+                                player.networkHandler.sendPacket(new PlaySoundIdS2CPacket(new Identifier("minecraft:entity.zombie.attack_iron_door"), SoundCategory.MASTER, player.getPos(), 20f, 0.5f));
                                 ctx.getSource().sendFeedback(new LiteralText("§cIncorrect password!"), false);
                             }
                         } catch(Exception e){

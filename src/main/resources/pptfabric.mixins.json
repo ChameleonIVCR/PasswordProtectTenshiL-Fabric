@@ -3,7 +3,6 @@
     "package": "com.chame.passwordtenshi.mixin",
     "compatibilityLevel": "JAVA_16",
     "mixins": [
-      "MixinMinecraftServer",
       "PlayerManagerMixin",
       "ServerPlayNetworkHandlerMixin"
     ],
