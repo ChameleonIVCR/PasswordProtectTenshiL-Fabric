@@ -1,6 +1,5 @@
 package com.chame.passwordtenshi.commands;
 
-import com.chame.passwordtenshi.PasswordTenshi;
 import com.chame.passwordtenshi.utils.PasswordChecker;
 import com.chame.passwordtenshi.player.PlayerSession;
 import com.chame.passwordtenshi.player.PlayerStorage;
