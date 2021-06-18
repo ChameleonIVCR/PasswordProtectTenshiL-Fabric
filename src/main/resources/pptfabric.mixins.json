@@ -1,6 +1,6 @@
 {
     "required": true,
-    "package": "me.chame.passwordtenshi.mixin",
+    "package": "com.chame.passwordtenshi.mixin",
     "compatibilityLevel": "JAVA_16",
     "mixins": [
       "MixinMinecraftServer",
