@@ -40,8 +40,8 @@ public class UnregisterPlayer{
                             playerSession.setAuthorized(false);
                             playerSession.setSpectator();
 
-                            targetPlayer.sendMessage(new LiteralText("§aYou have been unregistered by an administrador. Your credentials have been erased. Please register again."), false);
-
+                            targetPlayer.sendMessage(new LiteralText("§aYou have been unregistered by an administrador. Your login credentials have been erased. Please register again."), false);
+                            ctx.getSource().sendFeedback(new LiteralText("§aThe user credentials have been removed, and the user has been deauthorized."), false);
                             playerSession.authReminder();
 
                             return 1;
