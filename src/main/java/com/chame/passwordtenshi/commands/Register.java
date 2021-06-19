@@ -27,7 +27,7 @@ public class Register {
                             return 1;
 
                         } else if (playerSession.isAuthorized()) {
-                            ctx.getSource().sendFeedback(new LiteralText("§cYou're already authorized."), false);
+                            ctx.getSource().sendFeedback(new LiteralText("§cYou are already authorized."), false);
                             return 1;
 
                         } else if (playerSession.getPasswordHash() != null) {

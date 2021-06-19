@@ -15,11 +15,12 @@ public class PlayerRegisterReminder implements Callable<Boolean> {
     @Override
     public Boolean call(){
         final int[] times = {0};
+        final String passwordHash = this.playerSession.getPasswordHash();
         
         while (this.playerSession.getPlayer().networkHandler.getConnection().isOpen()){ 
             
             if(!this.playerSession.isAuthorized()){
-                if (this.playerSession.getPasswordHash() == null){
+                if (passwordHash == null){
                     playerSession.getPlayer().sendMessage(new LiteralText("Please register by using /register, then inputing your password."), false);
                 } else {
                     playerSession.getPlayer().sendMessage(new LiteralText("Please login by using /login."), false);
