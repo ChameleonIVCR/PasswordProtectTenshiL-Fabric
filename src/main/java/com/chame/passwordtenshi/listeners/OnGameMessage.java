@@ -11,7 +11,7 @@ public class OnGameMessage {
         ServerPlayerEntity player = networkHandler.player;
         String message = packet.getChatMessage();
         Boolean isAuthorized = PlayerStorage.getPlayerSession(player.getUuid()).isAuthorized();
-        // TODO: config to allow more commands when you're not logged
+
         if (!isAuthorized && (message.startsWith("/login") || message.startsWith("/register"))) {
             return true;
         }

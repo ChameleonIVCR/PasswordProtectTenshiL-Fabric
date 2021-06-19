@@ -37,12 +37,10 @@ public class PlayerSession {
     }
 
     public void setSpectator(){
-        //TODO: Research this later.
         this.player.changeGameMode(GameMode.SPECTATOR);
     }
 
     public void setSurvival(){
-        //TODO: Research this later.
         this.player.changeGameMode(GameMode.SURVIVAL);
     }
 
