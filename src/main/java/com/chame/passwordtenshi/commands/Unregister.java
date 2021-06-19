@@ -9,7 +9,7 @@ import net.minecraft.text.LiteralText;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class CommandUnregister{
+public class Unregister{
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("unregister")
