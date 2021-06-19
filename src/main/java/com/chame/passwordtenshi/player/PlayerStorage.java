@@ -15,10 +15,20 @@ public class PlayerStorage {
     }
 
     public static PlayerSession getPlayerSession(UUID uuid){
-        return playerstorage.get(uuid);
+        try {
+            return playerstorage.get(uuid);
+        } catch (NullPointerException e){
+            return null;
+        }
+        
     }
 
-    public static void removePlayerSession(UUID uuid){
-        playerstorage.remove(uuid);
+    public static Boolean removePlayerSession(UUID uuid){
+        try {
+            playerstorage.remove(uuid);
+            return true;
+        } catch (NullPointerException e){
+            return false;
+        }
     }
 }
