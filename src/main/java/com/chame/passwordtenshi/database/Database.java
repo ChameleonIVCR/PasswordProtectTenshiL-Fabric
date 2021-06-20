@@ -15,29 +15,35 @@ public class Database{
     private Statement statement;
 
     public Database (String hostip, String user, String pass) {
-        credentials = JdbcConnectionPool.create("jdbc:h2:file:"+hostip+";IFEXISTS=FALSE", user, pass);
+        this.credentials = JdbcConnectionPool.create("jdbc:h2:file:"+hostip+";IFEXISTS=FALSE", user, pass);
     }
 
     public boolean check() {
         final StringBuilder tablereq 
-                = new StringBuilder("CREATE TABLE IF NOT EXISTS users (");
+                = new StringBuilder("CREATE TABLE IF NOT EXISTS pptenshi (");
                 tablereq.append("`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,");
                 tablereq.append("`uuid` VARCHAR(128) NOT NULL,");
-                tablereq.append("`password` VARCHAR(512) NOT NULL)");
+                tablereq.append("`password` VARCHAR(512) NOT NULL,");
+                tablereq.append("`autologin` BIT NOT NULL DEFAULT 0,");
+                //50 length to support IPV6 with network adapter codes too,
+                //even though the theorical max is 45.
+                tablereq.append("`ip` VARCHAR(50) NOT NULL)");
 
         try {
-            this.connection = credentials.getConnection();
-            this.statement = connection.createStatement();
-            this.statement.executeUpdate(tablereq.toString());
+            connection = credentials.getConnection();
+            statement = connection.createStatement();
+            statement.executeUpdate(tablereq.toString());
+            closeSQL();
             return true;
         } catch(SQLException ex){
+            closeSQL();
             return false;
         }
     }
 
-    public boolean addPass(String playeruuid, String password){
+    public boolean addUser(String playeruuid, String password, String ip){
         boolean result = false;
-        final String insertquery = "INSERT INTO users (uuid, password) "+ "VALUES ('"+playeruuid+"', '"+password+"');";
+        final String insertquery = "INSERT INTO pptenshi (uuid, password, ip) VALUES ('"+playeruuid+"', '"+password+"', '"+ip+"');";
 
         try {
             connection = credentials.getConnection(); 
@@ -47,16 +53,37 @@ public class Database{
                 result = true;
             }
         } catch(SQLException ex){
-            //ignore for now
+            ex.printStackTrace();
         }
         
         closeSQL();
         return result;
     }
 
-    public boolean deletePass(String playeruuid){
+    public Boolean changeAutoLogin(String playeruuid, Boolean value){
+        Boolean result = false;
+        String updateValue = value ? "1" : "0";
+
+        final String updateQuery = "UPDATE pptenshi SET autologin='"+updateValue+"' WHERE uuid='"+playeruuid+"'";
+
+        try {
+            connection = credentials.getConnection(); 
+            statement = connection.createStatement();
+            int response = statement.executeUpdate(updateQuery);
+            if (response > 0){
+                result = true;
+            }
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        
+        closeSQL();
+        return result;
+    }
+
+    public boolean removeUser(String playeruuid){
         boolean result = false;
-        final String delquery = "DELETE FROM users WHERE uuid = "+"'"+playeruuid+"'";
+        final String delquery = "DELETE FROM pptenshi WHERE uuid = "+"'"+playeruuid+"'";
 
         try {
             connection = credentials.getConnection(); 
@@ -66,37 +93,43 @@ public class Database{
                 result = true;
             }
         } catch(SQLException ex){
-            //ignore for now.
-            //TODO RAISE WARNING
+            ex.printStackTrace();
         }
         closeSQL();
         return result;
     }
 
-    public String getPass(String playeruuid){
-        String retrievedpass = null;
-        final String getQuery = "SELECT password FROM users WHERE uuid = "+"'"+playeruuid+"'";
+    public String[] fetchUser(String playeruuid){
+        final String getQuery = "SELECT password,autologin,ip FROM pptenshi WHERE uuid = '"+playeruuid+"'";
 
         try {
             connection = credentials.getConnection();
             statement = connection.createStatement();
             resultset = statement.executeQuery(getQuery);
-            // if the user has not made a password yet
-            if (!resultset.next()) {
+
+            if (!this.resultset.next()) {
                 closeSQL();
                 return null;
             }
-            retrievedpass = resultset.getString("password");
-        } catch(SQLException ex){
 
+            final String retrievedpass = resultset.getString("password");
+            final String autologin = resultset.getBoolean("autologin") ? "true" : "false";
+            final String ip = resultset.getString("ip");
+
+            closeSQL();
+            return new String[]{retrievedpass, autologin, ip};
+
+        } catch(SQLException ex){
+            ex.printStackTrace();
         }
+
         closeSQL();
-        return retrievedpass;
+        return null;
     }
 
     private void closeSQL(){
         try {
-            if( connection != null){
+            if(connection != null){
                 try{
                     connection.close();
                 }
@@ -104,7 +137,7 @@ public class Database{
                     ex.printStackTrace();
                 }
             }
-            if( statement != null){
+            if(statement != null){
                 try{
                     statement.close();
                 }
@@ -112,7 +145,7 @@ public class Database{
                     ex.printStackTrace();
                 }
             }
-            if( resultset != null){
+            if(resultset != null){
                 try{
                     resultset.close();
                 }

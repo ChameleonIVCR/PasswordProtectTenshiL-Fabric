@@ -36,13 +36,12 @@ public class UnregisterPlayer{
                                 return 1;
                             }
 
-                            playerSession.removePasswordHash();
+                            playerSession.removeUser();
                             playerSession.setAuthorized(false);
-                            playerSession.setSpectator();
+                            playerSession.getPlayer().networkHandler.disconnect(new LiteralText("An administrator has reset your credentials. Please rejoin and register again!"));
 
-                            targetPlayer.sendMessage(new LiteralText("§aYou have been unregistered by an administrador. Your login credentials have been erased. Please register again."), false);
                             ctx.getSource().sendFeedback(new LiteralText("§aThe user credentials have been removed, and the user has been deauthorized."), false);
-                            playerSession.authReminder();
+
 
                             return 1;
         })));

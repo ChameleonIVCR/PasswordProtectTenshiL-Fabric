@@ -15,11 +15,11 @@ public class PlayerRegisterReminder implements Callable<Boolean> {
     @Override
     public Boolean call(){
         final int[] times = {0};
-        final String passwordHash = this.playerSession.getPasswordHash();
+        final String passwordHash = playerSession.getPasswordHash();
         
-        while (this.playerSession.getPlayer().networkHandler.getConnection().isOpen()){ 
+        while (playerSession.getPlayer().networkHandler.getConnection().isOpen()){ 
             
-            if(!this.playerSession.isAuthorized()){
+            if(!playerSession.isAuthorized()){
                 if (passwordHash == null){
                     playerSession.getPlayer().sendMessage(new LiteralText("Please register by using /register, then inputing your password."), false);
                 } else {
@@ -35,7 +35,7 @@ public class PlayerRegisterReminder implements Callable<Boolean> {
             }
             times[0]++;
             if (times[0] >= 12){
-                this.playerSession.getPlayer().networkHandler.disconnect(new LiteralText("You've been disconnected by uhh, login timeout."));
+                playerSession.getPlayer().networkHandler.disconnect(new LiteralText("You've been disconnected by uhh, login timeout."));
                 break;
             }
         }

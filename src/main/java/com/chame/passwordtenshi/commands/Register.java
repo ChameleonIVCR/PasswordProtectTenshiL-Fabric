@@ -37,7 +37,7 @@ public class Register {
 
                         try{
                             String hash = PasswordChecker.getSaltedHash(password);
-                            playerSession.setPasswordHash(hash);
+                            playerSession.addUser(hash);
                             playerSession.setAuthorized(true);
                             playerSession.setSurvival();
                         } catch (Exception i){

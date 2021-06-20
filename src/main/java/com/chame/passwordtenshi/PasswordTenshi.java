@@ -31,6 +31,7 @@ public class PasswordTenshi implements DedicatedServerModInitializer {
             Register.register(dispatcher);
             Unregister.register(dispatcher);
             UnregisterPlayer.register(dispatcher);
+            AutoLogin.register(dispatcher);
         });
     }
 
