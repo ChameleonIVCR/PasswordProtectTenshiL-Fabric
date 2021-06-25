@@ -1,44 +1,34 @@
 package com.chame.passwordtenshi.player;
 
 import net.minecraft.text.LiteralText;
+import net.minecraft.server.network.ServerPlayerEntity;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.Callable;
-
-public class PlayerRegisterReminder implements Callable<Boolean> {
-    private final PlayerSession playerSession;
+public class PlayerRegisterReminder implements Runnable {
+    private final ServerPlayerEntity player;
+    private final String passwordHash;
 
     public PlayerRegisterReminder(PlayerSession player){
-        this.playerSession = player;
+        this.player = player.getPlayer();
+        passwordHash = player.getPasswordHash();
     }
 
     @Override
-    public Boolean call(){
-        final int[] times = {0};
-        final String passwordHash = playerSession.getPasswordHash();
+    public void run() {
+        final Boolean isAuthorized = PlayerStorage.getPlayerSession(player.getUuid()).isAuthorized();
         
-        while (playerSession.getPlayer().networkHandler.getConnection().isOpen()){ 
-            
-            if(!playerSession.isAuthorized()){
-                if (passwordHash == null){
-                    playerSession.getPlayer().sendMessage(new LiteralText("Please register by using /register, then inputing your password."), false);
-                } else {
-                    playerSession.getPlayer().sendMessage(new LiteralText("Please login by using /login."), false);
-                }
-            } else{
-                break;
-            }
-            try {
-                TimeUnit.SECONDS.sleep(10);
-            } catch (InterruptedException e){
-                //pass
-            }
-            times[0]++;
-            if (times[0] >= 12){
-                playerSession.getPlayer().networkHandler.disconnect(new LiteralText("You've been disconnected by uhh, login timeout."));
-                break;
-            }
+        System.out.println(isAuthorized);
+        System.out.println(!player.networkHandler.getConnection().isOpen());
+        System.out.println(isAuthorized == null);
+        
+        if (!player.networkHandler.getConnection().isOpen() || isAuthorized || isAuthorized == null) {
+            //Stop further repetitions. TODO: find a cleaner way.
+            throw new RuntimeException("Reminder done.");
         }
-        return true;
+
+        if(passwordHash == null) {
+            player.sendMessage(new LiteralText("§3Please register by using §c/register.\n§3E.g. §c/register <password>"), false);
+        } else {
+            player.sendMessage(new LiteralText("§3To continue, please login by using §c/login."), false);
+        }
     }
 }

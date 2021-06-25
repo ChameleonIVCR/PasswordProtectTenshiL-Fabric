@@ -13,13 +13,17 @@ import java.nio.file.Paths;
 
 import java.io.File;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+
+//TODO: Respawn player if dead.
+//TODO: Fix the reminder not calling sometimes after player leaves and connects again.
 
 public class PasswordTenshi implements DedicatedServerModInitializer {
     private final ConfigFile config = new ConfigFile();
     //Amount of threads to use.
-    private static final ExecutorService scheduler = Executors.newFixedThreadPool(2);
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
     @Override
     public void onInitializeServer() {
@@ -35,7 +39,7 @@ public class PasswordTenshi implements DedicatedServerModInitializer {
         });
     }
 
-    public static ExecutorService getMainExecutor(){
+    public static ScheduledExecutorService getMainExecutor(){
         return scheduler;
     }
 

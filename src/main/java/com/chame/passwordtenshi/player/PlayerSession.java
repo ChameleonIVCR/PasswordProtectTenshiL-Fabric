@@ -10,7 +10,7 @@ import net.minecraft.world.GameMode;
 
 import java.util.UUID;
 
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerSession {
 
@@ -111,8 +111,11 @@ public class PlayerSession {
     }
 
     public void authReminder() {
-        FutureTask<Boolean> task = new FutureTask<>(new PlayerRegisterReminder((PlayerSession) this));
-        PasswordTenshi.getMainExecutor().execute(task);
+        Runnable repeatingTask = new PlayerRegisterReminder((PlayerSession) this);
+        Runnable timeOutTask = new PlayerTimeOutKick(player);
+        System.out.println("Executing tasks.");  
+        PasswordTenshi.getMainExecutor().scheduleAtFixedRate(repeatingTask, 0, 12, TimeUnit.SECONDS);
+        PasswordTenshi.getMainExecutor().schedule(timeOutTask, 2, TimeUnit.MINUTES);
     }
 
     public static void setDatabase(Database db) {

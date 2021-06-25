@@ -2,8 +2,11 @@ package com.chame.passwordtenshi.listeners;
 
 import com.chame.passwordtenshi.player.*;
 
+import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
+import net.minecraft.world.GameMode;
 
 public class OnPlayerConnect {
 
@@ -11,10 +14,21 @@ public class OnPlayerConnect {
         
         PlayerSession playerSession = new PlayerSession(player);
 
+        if(player.isDead()){
+            if (player.getHealth() > 0.0F) {
+                player.setHealth(0.0F);
+            }
+            ServerWorld playerWorld = player.getServerWorld();
+            //TODO: Respawn player if dead.
+            //Corrupts entity
+            //player.getServer().getPlayerManager().respawnPlayer(player, false);
+            player.networkHandler.sendPacket(new PlayerRespawnS2CPacket(playerWorld.getDimension(), playerWorld.getRegistryKey(), -1, GameMode.SPECTATOR, player.interactionManager.getGameMode(), false, false, false));
+        }
+
         if (player.getIp().equals(playerSession.getStoredIp()) && playerSession.isAutoLogin()){
             playerSession.setSurvival();
             playerSession.setAuthorized(true);
-            player.sendMessage(new LiteralText("§9You have been logged in automatically. Use /autologin to deactive this function.\n§eWelcome back."), false);
+            player.sendMessage(new LiteralText("§9You have been logged in automatically. Use /autologin to deactive this function.\n§aWelcome back."), false);
             
         } else {
             playerSession.setSpectator();
