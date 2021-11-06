@@ -19,15 +19,15 @@ public class Database{
     }
 
     public boolean check() {
-        final StringBuilder tablereq 
+        final StringBuilder tablereq
                 = new StringBuilder("CREATE TABLE IF NOT EXISTS pptenshi (");
-                tablereq.append("`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,");
-                tablereq.append("`uuid` VARCHAR(128) NOT NULL,");
-                tablereq.append("`password` VARCHAR(512) NOT NULL,");
-                tablereq.append("`autologin` BIT NOT NULL DEFAULT 0,");
-                //50 length to support IPV6 with network adapter codes too,
-                //even though the theorical max is 45.
-                tablereq.append("`ip` VARCHAR(50) NOT NULL)");
+        tablereq.append("`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,");
+        tablereq.append("`uuid` VARCHAR(128) NOT NULL,");
+        tablereq.append("`password` VARCHAR(512) NOT NULL,");
+        tablereq.append("`autologin` BIT NOT NULL DEFAULT 0,");
+        // 50 length to support IPV6 with network adapter codes too,
+        // even though the theorical max is 45.
+        tablereq.append("`ip` VARCHAR(50) NOT NULL)");
 
         try {
             connection = credentials.getConnection();
@@ -46,7 +46,7 @@ public class Database{
         final String insertquery = "INSERT INTO pptenshi (uuid, password, ip) VALUES ('"+playeruuid+"', '"+password+"', '"+ip+"');";
 
         try {
-            connection = credentials.getConnection(); 
+            connection = credentials.getConnection();
             statement = connection.createStatement();
             int response = statement.executeUpdate(insertquery);
             if (response > 0){
@@ -55,7 +55,7 @@ public class Database{
         } catch(SQLException ex){
             ex.printStackTrace();
         }
-        
+
         closeSQL();
         return result;
     }
@@ -67,7 +67,7 @@ public class Database{
         final String updateQuery = "UPDATE pptenshi SET autologin='"+updateValue+"' WHERE uuid='"+playeruuid+"'";
 
         try {
-            connection = credentials.getConnection(); 
+            connection = credentials.getConnection();
             statement = connection.createStatement();
             int response = statement.executeUpdate(updateQuery);
             if (response > 0){
@@ -76,7 +76,7 @@ public class Database{
         } catch(SQLException ex){
             ex.printStackTrace();
         }
-        
+
         closeSQL();
         return result;
     }
@@ -86,7 +86,7 @@ public class Database{
         final String delquery = "DELETE FROM pptenshi WHERE uuid = "+"'"+playeruuid+"'";
 
         try {
-            connection = credentials.getConnection(); 
+            connection = credentials.getConnection();
             statement = connection.createStatement();
             int response = statement.executeUpdate(delquery);
             if (response > 0){
@@ -157,4 +157,4 @@ public class Database{
             ex.printStackTrace();
         }
     }
-} 
+}

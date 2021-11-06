@@ -3,5 +3,7 @@ bin/
 build/
 .settings/
 .vscode/
-.project
-.classpath
+.project/
+.classpath/
+.idea/
+run/

@@ -21,8 +21,8 @@ public class OnPlayerConnect {
             ServerWorld playerWorld = player.getServerWorld();
             //TODO: Respawn player if dead.
             //Corrupts entity
-            //player.getServer().getPlayerManager().respawnPlayer(player, false);
-            player.networkHandler.sendPacket(new PlayerRespawnS2CPacket(playerWorld.getDimension(), playerWorld.getRegistryKey(), -1, GameMode.SPECTATOR, player.interactionManager.getGameMode(), false, false, false));
+            player.getServer().getPlayerManager().respawnPlayer(player, true);
+            //player.networkHandler.sendPacket(new PlayerRespawnS2CPacket(playerWorld.getDimension(), playerWorld.getRegistryKey(), -1, GameMode.SPECTATOR, player.interactionManager.getGameMode(), false, false, false));
         }
 
         if (player.getIp().equals(playerSession.getStoredIp()) && playerSession.isAutoLogin()){

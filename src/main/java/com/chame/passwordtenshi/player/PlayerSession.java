@@ -111,7 +111,7 @@ public class PlayerSession {
     }
 
     public void authReminder() {
-        Runnable repeatingTask = new PlayerRegisterReminder((PlayerSession) this);
+        Runnable repeatingTask = new PlayerRegisterReminder(this);
         Runnable timeOutTask = new PlayerTimeOutKick(player);
         System.out.println("Executing tasks.");  
         PasswordTenshi.getMainExecutor().scheduleAtFixedRate(repeatingTask, 0, 12, TimeUnit.SECONDS);

@@ -1,9 +1,9 @@
 package com.chame.passwordtenshi;
 
 import com.chame.passwordtenshi.player.*;
-import com.chame.passwordtenshi.database.*;
 import com.chame.passwordtenshi.commands.*;
 import com.chame.passwordtenshi.utils.*;
+import com.chame.passwordtenshi.database.Database;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
@@ -22,7 +22,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class PasswordTenshi implements DedicatedServerModInitializer {
     private final ConfigFile config = new ConfigFile();
-    //Amount of threads to use.
+    // Amount of threads to use.
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
     @Override
@@ -43,12 +43,16 @@ public class PasswordTenshi implements DedicatedServerModInitializer {
         return scheduler;
     }
 
-
     private void initializeDatabase(){
         File directory = new File("config/pptenshi/");
         Path path = Paths.get(directory.getAbsolutePath(), config.getProperty("databaseName"));
         
-        Database database = new Database(path.toString(), config.getProperty("databaseUser"), config.getProperty("databasePassword"));
+        Database database = new Database(
+                path.toString(),
+                config.getProperty("databaseUser"),
+                config.getProperty("databasePassword")
+        );
+
         database.check();
         PlayerSession.setDatabase(database);
     }

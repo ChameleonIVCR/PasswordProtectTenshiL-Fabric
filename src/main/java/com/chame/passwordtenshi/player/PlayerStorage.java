@@ -23,7 +23,7 @@ public class PlayerStorage {
         
     }
 
-    public static Boolean removePlayerSession(UUID uuid){
+    public static boolean removePlayerSession(UUID uuid){
         try {
             playerstorage.remove(uuid);
             return true;
