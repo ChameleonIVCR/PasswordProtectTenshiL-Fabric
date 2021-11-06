@@ -1,7 +1,7 @@
 import java.nio.file.Paths
 
 plugins {
-    id 'fabric-loom' version '0.8-SNAPSHOT'
+    id 'fabric-loom' version '0.10.50'
     id 'java'
     id "com.github.johnrengelman.shadow" version "7.0.0"
 }
@@ -23,15 +23,15 @@ version = project.mod_version
 group = project.maven_group
 
 dependencies {
-    //Fabric
-    minecraft "com.mojang:minecraft:1.17"
-    mappings "net.fabricmc:yarn:1.17+build.13:v2"
-    modImplementation "net.fabricmc:fabric-loader:0.11.6"
+    // Fabric
+    minecraft "com.mojang:minecraft:1.17.1"
+    mappings "net.fabricmc:yarn:1.17.1+build.63:v2"
+    modImplementation "net.fabricmc:fabric-loader:0.12.5"
 
-	//Fabric API
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.35.2+1.17"
+    // Fabric api
+    modImplementation "net.fabricmc.fabric-api:fabric-api:0.42.0+1.17"
 	
-    //Database
+    // Database
     shadow "com.h2database:h2:1.4.200"
 }
 
