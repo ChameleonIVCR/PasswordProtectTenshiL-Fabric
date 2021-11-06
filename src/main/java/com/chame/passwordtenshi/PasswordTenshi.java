@@ -7,22 +7,24 @@ import com.chame.passwordtenshi.database.Database;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.minecraft.server.network.ServerPlayerEntity;
+import org.h2.tools.Server;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.io.File;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-
-//TODO: Respawn player if dead.
-//TODO: Fix the reminder not calling sometimes after player leaves and connects again.
 
 public class PasswordTenshi implements DedicatedServerModInitializer {
     private final ConfigFile config = new ConfigFile();
-    // Amount of threads to use.
+    private static final List<PlayerPendingLogin> playersPendingLogin = new ArrayList<>();
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
     @Override
@@ -37,10 +39,15 @@ public class PasswordTenshi implements DedicatedServerModInitializer {
             UnregisterPlayer.register(dispatcher);
             AutoLogin.register(dispatcher);
         });
+        scheduler.scheduleAtFixedRate(new PlayerRegisterReminder(playersPendingLogin), 0, 12, TimeUnit.SECONDS);
     }
 
     public static ScheduledExecutorService getMainExecutor(){
         return scheduler;
+    }
+
+    public static void addPlayerPendingLogin(ServerPlayerEntity player){
+        playersPendingLogin.add(new PlayerPendingLogin(player));
     }
 
     private void initializeDatabase(){
@@ -55,5 +62,14 @@ public class PasswordTenshi implements DedicatedServerModInitializer {
 
         database.check();
         PlayerSession.setDatabase(database);
+    }
+
+    public static class PlayerPendingLogin{
+        public ServerPlayerEntity player;
+        public int reminderCounter = 0;
+
+        public PlayerPendingLogin(ServerPlayerEntity p){
+            player = p;
+        }
     }
 }

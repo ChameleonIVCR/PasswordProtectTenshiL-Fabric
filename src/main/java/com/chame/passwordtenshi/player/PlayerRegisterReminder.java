@@ -1,34 +1,56 @@
 package com.chame.passwordtenshi.player;
 
+import com.chame.passwordtenshi.PasswordTenshi;
 import net.minecraft.text.LiteralText;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class PlayerRegisterReminder implements Runnable {
-    private final ServerPlayerEntity player;
-    private final String passwordHash;
+import java.util.List;
 
-    public PlayerRegisterReminder(PlayerSession player){
-        this.player = player.getPlayer();
-        passwordHash = player.getPasswordHash();
+public class PlayerRegisterReminder implements Runnable {
+    private final List<PasswordTenshi.PlayerPendingLogin> playerList;
+
+    public PlayerRegisterReminder(List<PasswordTenshi.PlayerPendingLogin> pList){
+        this.playerList = pList;
     }
 
     @Override
     public void run() {
-        final Boolean isAuthorized = PlayerStorage.getPlayerSession(player.getUuid()).isAuthorized();
-        
-        System.out.println(isAuthorized);
-        System.out.println(!player.networkHandler.getConnection().isOpen());
-        System.out.println(isAuthorized == null);
-        
-        if (!player.networkHandler.getConnection().isOpen() || isAuthorized || isAuthorized == null) {
-            //Stop further repetitions. TODO: find a cleaner way.
-            throw new RuntimeException("Reminder done.");
-        }
+        for(PasswordTenshi.PlayerPendingLogin playerPending : playerList){
+            ServerPlayerEntity player = playerPending.player;
+            try {
+                PlayerSession playerSession = PlayerStorage.getPlayerSession(player.getUuid());
+                if (playerSession == null || !player.networkHandler.getConnection().isOpen()) {
+                    playerList.remove(playerPending);
+                    continue;
+                }
+                if (playerSession.isAuthorized()) {
+                    playerList.remove(playerPending);
+                    continue;
+                }
 
-        if(passwordHash == null) {
-            player.sendMessage(new LiteralText("§3Please register by using §c/register.\n§3E.g. §c/register <password>"), false);
-        } else {
-            player.sendMessage(new LiteralText("§3To continue, please login by using §c/login."), false);
+                if (playerPending.reminderCounter > 11) {
+                    player.networkHandler.disconnect(new LiteralText(
+                            "You took too long to authenticate, please try again."
+                    ));
+                }
+                playerPending.reminderCounter++;
+
+                final String passwordHash = playerSession.getPasswordHash();
+
+                if (passwordHash == null) {
+                    player.sendMessage(
+                            new LiteralText("§3Please register by using §c/register.\n§3E.g. §c/register <password>"),
+                            false
+                    );
+                } else {
+                    player.sendMessage(
+                            new LiteralText("§3To continue, please login by using §c/login."),
+                            false
+                    );
+                }
+            } catch (Exception e) {
+                playerList.remove(playerPending);
+            }
         }
     }
 }

@@ -10,8 +10,6 @@ import net.minecraft.world.GameMode;
 
 import java.util.UUID;
 
-import java.util.concurrent.TimeUnit;
-
 public class PlayerSession {
 
     private Boolean authorized = false;
@@ -111,11 +109,7 @@ public class PlayerSession {
     }
 
     public void authReminder() {
-        Runnable repeatingTask = new PlayerRegisterReminder(this);
-        Runnable timeOutTask = new PlayerTimeOutKick(player);
-        System.out.println("Executing tasks.");  
-        PasswordTenshi.getMainExecutor().scheduleAtFixedRate(repeatingTask, 0, 12, TimeUnit.SECONDS);
-        PasswordTenshi.getMainExecutor().schedule(timeOutTask, 2, TimeUnit.MINUTES);
+        PasswordTenshi.addPlayerPendingLogin(player);
     }
 
     public static void setDatabase(Database db) {

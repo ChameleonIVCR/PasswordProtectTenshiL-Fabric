@@ -53,7 +53,7 @@ public class UnregisterPlayer{
         playerSession.removeUser();
         playerSession.setAuthorized(false);
         playerSession.getPlayer().networkHandler.disconnect(
-                new LiteralText("An administrator has reset your credentials. Please rejoin and register again!")
+                new LiteralText("An administrator has reset your credentials. Please rejoin and register again.")
         );
 
         source.sendFeedback(

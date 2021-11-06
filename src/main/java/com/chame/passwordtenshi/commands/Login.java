@@ -6,8 +6,15 @@ import com.chame.passwordtenshi.player.PlayerStorage;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+
 import static net.minecraft.server.command.CommandManager.literal;
 import static net.minecraft.server.command.CommandManager.argument;
+
+import static com.mojang.brigadier.arguments.StringArgumentType.getString;
+import static com.mojang.brigadier.arguments.StringArgumentType.word;
+
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.network.packet.s2c.play.PlaySoundIdS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -19,42 +26,51 @@ public class Login {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("login")
-                .then(argument("password", StringArgumentType.word())
-                    .executes(ctx -> {
-                        String password = StringArgumentType.getString(ctx, "password");
-                        ServerPlayerEntity player = ctx.getSource().getPlayer();
-                        PlayerSession playerSession = PlayerStorage.getPlayerSession(player.getUuid());
+                .then(argument("password", word())
+                    .executes(Login::run)));
+    }
 
-                        if (playerSession.isAuthorized()) {
-                            ctx.getSource().sendFeedback(new LiteralText("§cYou are already authorized."), false);
-                            return 1;
-                        }
+    private static int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        final ServerCommandSource source = context.getSource();
+        final String password = getString(context, "password");
+        ServerPlayerEntity player = source.getPlayer();
+        PlayerSession playerSession = PlayerStorage.getPlayerSession(player.getUuid());
 
-                        String hash = playerSession.getPasswordHash();
+        if (playerSession == null) return 1;
 
-                        if (hash == null) {
-                            ctx.getSource().sendFeedback(new LiteralText("§cYou're not registered! Use /register instead."), false);
-                            return 1;
+        if (playerSession.isAuthorized()) {
+            source.sendFeedback(new LiteralText("§cYou are already authorized."), false);
+            return 1;
+        }
 
-                        } else if (password.length() == 0){
-                            ctx.getSource().sendFeedback(new LiteralText("§cYour password cannot be empty."), false);
-                            return 1;
-                        } 
-                        try{
-                            if (PasswordChecker.check(password, hash)) {
-                                playerSession.setAuthorized(true);
-                                playerSession.setSurvival();
-                                ctx.getSource().sendFeedback(new LiteralText("§aLogged in."), false);
-                                player.networkHandler.sendPacket(new PlaySoundIdS2CPacket(new Identifier("minecraft:block.note_block.pling"), SoundCategory.MASTER, player.getPos(), 100f, 0f));
-                                
-                            } else {
-                                player.networkHandler.sendPacket(new PlaySoundIdS2CPacket(new Identifier("minecraft:entity.zombie.attack_iron_door"), SoundCategory.MASTER, player.getPos(), 20f, 0.5f));
-                                ctx.getSource().sendFeedback(new LiteralText("§cIncorrect password!"), false);
-                            }
-                        } catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        return 1;
-        })));
+        String hash = playerSession.getPasswordHash();
+
+        if (hash == null) {
+            source.sendFeedback(new LiteralText("§cYou're not registered! Use /register instead."), false);
+            return 1;
+        } else if (password.length() == 0){
+            source.sendFeedback(new LiteralText("§cYour password cannot be empty."), false);
+            return 1;
+        }
+
+        try {
+            if (PasswordChecker.check(password, hash)) {
+                playerSession.setAuthorized(true);
+                playerSession.setSurvival();
+                source.sendFeedback(new LiteralText("§aLogged in"), false);
+                player.networkHandler.sendPacket(new PlaySoundIdS2CPacket(new Identifier("minecraft:block.note_block.pling"), SoundCategory.MASTER, player.getPos(), 100f, 0f));
+
+            } else {
+                player.networkHandler.sendPacket(new PlaySoundIdS2CPacket(new Identifier("minecraft:entity.zombie.attack_iron_door"), SoundCategory.MASTER, player.getPos(), 20f, 0.5f));
+                source.sendFeedback(new LiteralText("§cIncorrect password"), false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            playerSession.removeUser();
+            playerSession.setAuthorized(false);
+            playerSession.getPlayer().networkHandler.disconnect(new LiteralText("Your password has been reset, please rejoin and register again."));
+        }
+
+        return 1;
     }
 }
