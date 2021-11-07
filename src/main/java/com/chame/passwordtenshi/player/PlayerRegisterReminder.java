@@ -4,31 +4,34 @@ import com.chame.passwordtenshi.PasswordTenshi;
 import net.minecraft.text.LiteralText;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class PlayerRegisterReminder implements Runnable {
-    private final List<PasswordTenshi.PlayerPendingLogin> playerList;
-
-    public PlayerRegisterReminder(List<PasswordTenshi.PlayerPendingLogin> pList){
-        this.playerList = pList;
+    public PlayerRegisterReminder(){
     }
 
     @Override
     public void run() {
-        for(PasswordTenshi.PlayerPendingLogin playerPending : playerList){
+        List<PasswordTenshi.PlayerPendingLogin> playerList = PasswordTenshi.getPlayersPendingLogin();
+        ListIterator<PasswordTenshi.PlayerPendingLogin> playerIterator = playerList.listIterator();
+
+        while (playerIterator.hasNext()){
+            PasswordTenshi.PlayerPendingLogin playerPending = playerIterator.next();
             ServerPlayerEntity player = playerPending.player;
             try {
                 PlayerSession playerSession = PlayerStorage.getPlayerSession(player.getUuid());
                 if (playerSession == null || !player.networkHandler.getConnection().isOpen()) {
-                    playerList.remove(playerPending);
+                    playerIterator.remove();
                     continue;
                 }
                 if (playerSession.isAuthorized()) {
-                    playerList.remove(playerPending);
+                    playerIterator.remove();
                     continue;
                 }
 
-                if (playerPending.reminderCounter > 11) {
+                if (playerPending.reminderCounter > 9) {
                     player.networkHandler.disconnect(new LiteralText(
                             "You took too long to authenticate, please try again."
                     ));
@@ -49,7 +52,7 @@ public class PlayerRegisterReminder implements Runnable {
                     );
                 }
             } catch (Exception e) {
-                playerList.remove(playerPending);
+                playerIterator.remove();
             }
         }
     }

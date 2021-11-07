@@ -3,8 +3,10 @@ package com.chame.passwordtenshi.listeners;
 import com.chame.passwordtenshi.player.*;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
+
 
 public class OnPlayerConnect {
 
@@ -17,10 +19,15 @@ public class OnPlayerConnect {
             }
             MinecraftServer server = player.getServer();
             if (server == null) return;
-            server.getPlayerManager().respawnPlayer(player, true);
+            PlayerManager playerManager = server.getPlayerManager();
+
+            // Will cause an exception. Whoops.
+            // TODO Fix this
+            playerManager.respawnPlayer(player, true);
+            playerSession.setWasDead(true);
         }
 
-        if (playerSession.isAutoLogin() && player.getIp().equals(playerSession.getStoredIp())){
+        if (playerSession.isAutoLogin() && player.getIp().equals(playerSession.getStoredIp()) && !playerSession.wasDead()){
             playerSession.setSurvival();
             playerSession.setAuthorized(true);
             player.sendMessage(new LiteralText(
@@ -35,7 +42,6 @@ public class OnPlayerConnect {
                     false
             );
         }
-
         PlayerStorage.addPlayerSession(playerSession);
     }
 }

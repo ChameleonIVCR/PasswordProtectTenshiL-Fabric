@@ -71,6 +71,10 @@ public class Login {
             playerSession.getPlayer().networkHandler.disconnect(new LiteralText("Your password has been reset, please rejoin and register again."));
         }
 
+        if (playerSession.wasDead()) {
+            playerSession.getPlayer().networkHandler.disconnect(new LiteralText("As you've been respawned, please join again."));
+        }
+
         return 1;
     }
 }

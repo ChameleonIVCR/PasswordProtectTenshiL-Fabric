@@ -12,10 +12,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
+
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     public void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
         OnPlayerConnect.listen(player);
     }
+
     @Inject(method = "remove", at = @At("TAIL"))
     public void remove(ServerPlayerEntity player, CallbackInfo ci) {
         OnPlayerLeave.listen(player);

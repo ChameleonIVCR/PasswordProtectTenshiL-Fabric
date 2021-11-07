@@ -54,6 +54,11 @@ public class Register {
         }
 
         source.sendFeedback(new LiteralText("§aWelcome."), false);
+
+        if (playerSession.wasDead()) {
+            playerSession.getPlayer().networkHandler.disconnect(new LiteralText("As you've been respawned, please join again."));
+        }
+
         return 1;
     }
 }

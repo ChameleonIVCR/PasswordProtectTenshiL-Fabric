@@ -11,12 +11,12 @@ import net.minecraft.world.GameMode;
 import java.util.UUID;
 
 public class PlayerSession {
-
-    private Boolean authorized = false;
-    private Boolean hasChangedAutoLogin = false;
+    private boolean authorized = false;
+    private boolean hasChangedAutoLogin = false;
+    private boolean wasDead = false;
+    private boolean autologin;
     private String password;
     private String storedIp;
-    private Boolean autologin;
     private AreaEffectCloudEntity playerCloud;
     private final ServerPlayerEntity player;
     private final UUID uuid;
@@ -26,6 +26,14 @@ public class PlayerSession {
         this.player = player;
         this.uuid = player.getUuid();
         fetchDatabase();
+    }
+
+    public boolean wasDead() {
+        return wasDead;
+    }
+
+    public void setWasDead(boolean wasDead) {
+        this.wasDead = wasDead;
     }
 
     public UUID getUUID() {
@@ -104,7 +112,7 @@ public class PlayerSession {
     public void removeUser() {
         database.removeUser(uuid.toString());
         password = null;
-        autologin = null;
+        autologin = false;
         storedIp = null;
     }
 

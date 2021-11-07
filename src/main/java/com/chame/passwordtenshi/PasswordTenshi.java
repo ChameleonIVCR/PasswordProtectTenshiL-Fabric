@@ -8,7 +8,6 @@ import com.chame.passwordtenshi.database.Database;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.h2.tools.Server;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +21,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 
+// TODO: Shutdown signal
 public class PasswordTenshi implements DedicatedServerModInitializer {
     private final ConfigFile config = new ConfigFile();
     private static final List<PlayerPendingLogin> playersPendingLogin = new ArrayList<>();
@@ -39,7 +39,7 @@ public class PasswordTenshi implements DedicatedServerModInitializer {
             UnregisterPlayer.register(dispatcher);
             AutoLogin.register(dispatcher);
         });
-        scheduler.scheduleAtFixedRate(new PlayerRegisterReminder(playersPendingLogin), 0, 12, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(new PlayerRegisterReminder(), 0, 12, TimeUnit.SECONDS);
     }
 
     public static ScheduledExecutorService getMainExecutor(){
@@ -48,6 +48,10 @@ public class PasswordTenshi implements DedicatedServerModInitializer {
 
     public static void addPlayerPendingLogin(ServerPlayerEntity player){
         playersPendingLogin.add(new PlayerPendingLogin(player));
+    }
+
+    public static List<PlayerPendingLogin> getPlayersPendingLogin(){
+        return playersPendingLogin;
     }
 
     private void initializeDatabase(){
