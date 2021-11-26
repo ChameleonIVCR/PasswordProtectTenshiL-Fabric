@@ -4,9 +4,13 @@ import com.chame.passwordtenshi.PasswordTenshi;
 import net.minecraft.text.LiteralText;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+
+/**
+ * Sends reminders to non-authenticated players, or kicks them after a certain
+ * number of repetitions.
+ */
 
 public class PlayerRegisterReminder implements Runnable {
     public PlayerRegisterReminder(){

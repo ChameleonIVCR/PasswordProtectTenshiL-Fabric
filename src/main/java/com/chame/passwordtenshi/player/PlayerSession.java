@@ -10,6 +10,11 @@ import net.minecraft.world.GameMode;
 
 import java.util.UUID;
 
+/**
+ * Contains player data relevant to authentication, and serves as cache
+ * between the database, and the server, thus reducing overhead.
+ */
+
 public class PlayerSession {
     private boolean authorized = false;
     private boolean hasChangedAutoLogin = false;

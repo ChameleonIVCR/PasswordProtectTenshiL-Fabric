@@ -7,6 +7,11 @@ import java.sql.Statement;
 
 import org.h2.jdbcx.JdbcConnectionPool;
 
+/**
+ * H2 Database connector for data persistence. A major rewrite is needed to make this process
+ * threaded, while retaining its reliability.
+ */
+
 public class Database{
 
     private final JdbcConnectionPool credentials;
@@ -60,8 +65,8 @@ public class Database{
         return result;
     }
 
-    public Boolean changeAutoLogin(String playeruuid, Boolean value){
-        Boolean result = false;
+    public boolean changeAutoLogin(String playeruuid, boolean value){
+        boolean result = false;
         String updateValue = value ? "1" : "0";
 
         final String updateQuery = "UPDATE pptenshi SET autologin='"+updateValue+"' WHERE uuid='"+playeruuid+"'";

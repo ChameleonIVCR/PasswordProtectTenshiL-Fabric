@@ -3,6 +3,10 @@ package com.chame.passwordtenshi.player;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Stores PlayerSessions in a ConcurrentHashMap to serve as cache.
+ */
+
 public class PlayerStorage {
     private static ConcurrentHashMap<UUID, PlayerSession> playerStorage;
 
