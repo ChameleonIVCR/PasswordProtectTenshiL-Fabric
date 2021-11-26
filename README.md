@@ -8,7 +8,7 @@ Meet PasswordProtectTenshiL(Lite)-Fabric, also known as PPTenshi.
 
 She will serve as the guardian angel of your Minecraft server.
 
-Supporting 1.17.1.
+Supporting 1.17.1, **depends on Fabric API (https://www.curseforge.com/minecraft/mc-mods/fabric-api)**
 
 **PPTenshiL-Fabric is a Fabric Server-sided Minecraft mod**
 
